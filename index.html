@@ -2,91 +2,247 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Starter Index Page</title>
-  <meta name="description" content="A minimal, responsive starter HTML page." />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Singleton Pattern Demo — Web App</title>
   <style>
-    :root { --bg:#0b1220; --card:#111a2d; --text:#e6e9ef; --muted:#a8b3cf; --accent:#7aa2f7; }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      background: radial-gradient(1200px 600px at 80% -10%, rgba(122,162,247,.15), transparent 60%), var(--bg);
-      color: var(--text); line-height: 1.6;
-    }
-    header { padding: 4rem 1rem 2rem; text-align: center; }
-    h1 { margin: 0 0 .5rem; font-size: clamp(1.8rem, 2.5vw + 1rem, 3rem); letter-spacing: .3px; }
-    p.lead { margin: .25rem auto 0; max-width: 60ch; color: var(--muted); }
-    main { display: grid; place-items: center; padding: 2rem 1rem 4rem; }
-    .card {
-      width: min(800px, 92%); background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
-      border: 1px solid rgba(255,255,255,.08); border-radius: 1.25rem; padding: 1.5rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.05);
-      backdrop-filter: blur(6px);
-    }
-    .row { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top: 1rem; }
-    .item { padding: 1rem; border-radius: .9rem; background: var(--card); border: 1px solid rgba(255,255,255,.06); }
-    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; background: #0f1629; color: #dfe6ff; }
-    pre { padding: .75rem; border-radius: .5rem; overflow: auto; }
-    .actions { display: flex; gap: .75rem; margin-top: 1rem; flex-wrap: wrap; }
-    .btn {
-      appearance: none; padding: .7rem 1rem; border-radius: .7rem; border: 1px solid rgba(255,255,255,.15);
-      background: linear-gradient(180deg, rgba(122,162,247,.15), rgba(122,162,247,.05));
-      color: var(--text); text-decoration: none; cursor: pointer; font-weight: 600;
-      transition: transform .08s ease, box-shadow .2s ease, border-color .2s ease;
-      box-shadow: 0 8px 16px rgba(122,162,247,.15);
-    }
-    .btn:hover { transform: translateY(-1px); border-color: rgba(122,162,247,.45); box-shadow: 0 10px 20px rgba(122,162,247,.2); }
-    footer { text-align: center; color: var(--muted); padding: 2rem 1rem; border-top: 1px solid rgba(255,255,255,.06); }
+    :root{--bg:#0f1724;--card:#0b1220;--muted:#94a3b8;--accent:#60a5fa}
+    body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:linear-gradient(180deg,#071124 0%, #081729 100%); color:#e6eef6; margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center}
+    .wrap{width:920px; max-width:96%; padding:28px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.04); border-radius:12px; box-shadow:0 10px 30px rgba(2,6,23,0.6)}
+    h1{margin:0 0 8px;font-size:20px}
+    p.lead{margin:0 0 18px;color:var(--muted)}
+    .grid{display:grid; grid-template-columns:1fr 320px; gap:18px}
+    .card{background:var(--card); padding:16px; border-radius:10px; border:1px solid rgba(255,255,255,0.02)}
+    button{background:transparent; border:1px solid rgba(255,255,255,0.08); color:inherit; padding:8px 12px; border-radius:8px; cursor:pointer}
+    button.primary{background:linear-gradient(90deg,var(--accent),#7dd3fc); color:#04263b; border:none}
+    .log{height:260px; overflow:auto; background:rgba(6,10,16,0.6); padding:12px; border-radius:8px; font-family:monospace; font-size:13px}
+    .row{display:flex; gap:8px; margin-bottom:8px}
+    label{display:block; font-size:13px; color:var(--muted); margin-bottom:6px}
+    .small{font-size:13px; color:var(--muted)}
+    .info{color:#bfe3ff; font-weight:600}
   </style>
 </head>
 <body>
-  <header>
-    <h1>It works 🎉</h1>
-    <p class="lead">This is a minimal, responsive <code>index.html</code> you can use as a starting point for your project.</p>
-  </header>
+  <div class="wrap">
+    <h1>Singleton Pattern Demo</h1>
+    <p class="lead">This single-page demo shows how to implement and verify Singleton objects in a web app. Two examples are provided:
+      <strong>AppConfig</strong> (application-wide singleton) and <strong>ShoppingCartManager</strong> (single manager per user session).</p>
 
-  <main>
-    <section class="card">
-      <h2>Quick Start</h2>
-      <div class="row">
-        <div class="item">
-          <strong>1.</strong> Open this file in a browser to see the page.
+    <div class="grid">
+      <div>
+        <div class="card">
+          <h2 style="margin-top:0">AppConfig (Application-wide Singleton)</h2>
+          <p class="small">A single configuration object that stores currency, tax rules, and discount policy. Creating it multiple times always returns the same instance.</p>
+
+          <div class="row" style="margin-top:10px">
+            <button id="createConfig" class="primary">Get AppConfig Instance</button>
+            <button id="showConfig">Show Current Config</button>
+            <button id="resetConfig">Reset AppConfig (for demo)</button>
+          </div>
+
+          <hr style="opacity:0.08" />
+
+          <h2>ShoppingCartManager (Session Singleton)</h2>
+          <p class="small">A single shopping cart manager stored per session. The cart persists across reloads for this browser tab (via <code>sessionStorage</code>).</p>
+
+          <div class="row">
+            <input id="productName" placeholder="Product name" style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit" />
+            <button id="addItem">Add Item</button>
+            <button id="clearCart">Clear Cart</button>
+          </div>
+
+          <div style="margin-top:10px">
+            <button id="showCart">Show Cart</button>
+            <button id="getCartManager">Get Cart Manager</button>
+          </div>
         </div>
-        <div class="item">
-          <strong>2.</strong> Edit the HTML, CSS, or JS below to customize.
-        </div>
-        <div class="item">
-          <strong>3.</strong> Save and refresh to view your changes.
+
+        <div class="card" style="margin-top:12px">
+          <h3 style="margin-top:0">How demo proves the Singleton</h3>
+          <ol style="margin:6px 0 0 18px;color:var(--muted);">
+            <li>Create multiple instances (calls). Each returned object shows the same <code>instanceId</code>.</li>
+            <li>For the shopping cart, the manager reads/writes to <code>sessionStorage</code>, so reloading keeps the same cart for this session.</li>
+            <li>Reset buttons demonstrate how a new instance would only be created after explicit reset (for demo).</li>
+          </ol>
         </div>
       </div>
 
-      <h3 style="margin-top:1.25rem;">Starter Markup</h3>
-      <pre>&lt;div class="hello"&gt;Hello world!&lt;/div&gt;</pre>
-
-      <div class="actions">
-        <button class="btn" id="helloBtn" type="button">Click me</button>
-        <a class="btn" href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank" rel="noreferrer noopener">HTML Docs</a>
+      <div class="card">
+        <h3 style="margin-top:0">Console / Output</h3>
+        <div id="log" class="log"></div>
+        <div style="margin-top:10px; display:flex; gap:8px; justify-content:flex-end">
+          <button id="copyLog">Copy Log</button>
+          <button id="clearLog">Clear Log</button>
+        </div>
       </div>
-      <p id="output" style="margin-top:.75rem; color: var(--muted);"></p>
-    </section>
-  </main>
+    </div>
 
-  <footer>
-    <small>&copy; <span id="year"></span> Your Project · Built with ❤️</small>
-  </footer>
+    <p style="margin-top:12px; color:var(--muted)">Tip: Open your browser's DevTools console to inspect the created objects. This demo uses plain JavaScript and works without any build step.</p>
+  </div>
 
   <script>
-    // Simple JS to show interactivity
-    const btn = document.getElementById('helloBtn');
-    const out = document.getElementById('output');
-    const year = document.getElementById('year');
-    year.textContent = new Date().getFullYear();
+    // ---------- Utility logger ----------
+    const logEl = document.getElementById('log');
+    function log(...args) {
+      const line = document.createElement('div');
+      line.textContent = args.map(a => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ');
+      logEl.appendChild(line);
+      logEl.scrollTop = logEl.scrollHeight;
+      console.log(...args);
+    }
 
-    btn.addEventListener('click', () => {
-      const now = new Date();
-      out.textContent = "Button clicked at " + now.toLocaleString();
-      console.log("Hello from index.html!");
+    // ---------- AppConfig singleton (module pattern) ----------
+    const AppConfig = (function(){
+      // private instance
+      let instance = null;
+
+      class AppConfigClass {
+        constructor({currency = 'USD', taxPercent = 5, discount = 0} = {}){
+          // properties
+          this.instanceId = Math.random().toString(36).slice(2,10);
+          this.currency = currency;
+          this.taxPercent = taxPercent;
+          this.discount = discount;
+          this.createdAt = new Date().toISOString();
+        }
+
+        update({currency, taxPercent, discount} = {}){
+          if(currency !== undefined) this.currency = currency;
+          if(taxPercent !== undefined) this.taxPercent = taxPercent;
+          if(discount !== undefined) this.discount = discount;
+        }
+
+        summary(){
+          return {
+            instanceId: this.instanceId,
+            currency: this.currency,
+            taxPercent: this.taxPercent,
+            discount: this.discount,
+            createdAt: this.createdAt
+          };
+        }
+      }
+
+      return {
+        getInstance(opts){
+          if(!instance) instance = new AppConfigClass(opts);
+          return instance;
+        },
+        // for demo only: reset the singleton so you can see a new instance being created
+        _resetForDemo(){ instance = null; }
+      };
+    })();
+
+    // ---------- ShoppingCartManager (session singleton) ----------
+    const ShoppingCartManager = (function(){
+      const STORAGE_KEY = 'demo_shopping_cart_v1';
+      let instance = null;
+
+      class Cart {
+        constructor(){
+          this.instanceId = Math.random().toString(36).slice(2,10);
+          // load items from session storage if available
+          const raw = sessionStorage.getItem(STORAGE_KEY);
+          this.items = raw ? JSON.parse(raw) : [];
+          this.createdAt = new Date().toISOString();
+        }
+
+        addItem(name){
+          const item = {id: Math.random().toString(36).slice(2,8), name, addedAt: new Date().toISOString()};
+          this.items.push(item);
+          this._save();
+          return item;
+        }
+
+        clear(){
+          this.items = [];
+          this._save();
+        }
+
+        _save(){
+          sessionStorage.setItem(STORAGE_KEY, JSON.stringify(this.items));
+        }
+
+        list(){
+          return this.items.slice();
+        }
+
+        summary(){
+          return {instanceId: this.instanceId, createdAt: this.createdAt, count: this.items.length};
+        }
+      }
+
+      return {
+        getInstance(){
+          if(!instance) instance = new Cart();
+          return instance;
+        },
+        // for demo only: clear storage and reset manager
+        _resetForDemo(){ sessionStorage.removeItem(STORAGE_KEY); instance = null; }
+      };
+    })();
+
+    // ---------- Wire up UI ----------
+    document.getElementById('createConfig').addEventListener('click', ()=>{
+      const cfg = AppConfig.getInstance({currency:'USD', taxPercent:8, discount:10});
+      log('[AppConfig] getInstance() returned ->', cfg.summary());
     });
+
+    document.getElementById('showConfig').addEventListener('click', ()=>{
+      const cfg = AppConfig.getInstance();
+      log('[AppConfig] current ->', cfg.summary());
+    });
+
+    document.getElementById('resetConfig').addEventListener('click', ()=>{
+      AppConfig._resetForDemo();
+      log('[AppConfig] reset (demo only). Next getInstance() will create a new instance.');
+    });
+
+    document.getElementById('addItem').addEventListener('click', ()=>{
+      const name = document.getElementById('productName').value.trim() || ('Product-' + Math.floor(Math.random()*999));
+      const cart = ShoppingCartManager.getInstance();
+      const item = cart.addItem(name);
+      log('[ShoppingCart] addItem ->', item);
+      log('[ShoppingCart] summary ->', cart.summary());
+    });
+
+    document.getElementById('showCart').addEventListener('click', ()=>{
+      const cart = ShoppingCartManager.getInstance();
+      log('[ShoppingCart] items ->', cart.list());
+      log('[ShoppingCart] summary ->', cart.summary());
+    });
+
+    document.getElementById('getCartManager').addEventListener('click', ()=>{
+      const c1 = ShoppingCartManager.getInstance();
+      const c2 = ShoppingCartManager.getInstance();
+      log('[ShoppingCart] two calls -> same instanceId?', c1.instanceId === c2.instanceId, c1.summary());
+    });
+
+    document.getElementById('clearCart').addEventListener('click', ()=>{
+      const cart = ShoppingCartManager.getInstance();
+      cart.clear();
+      log('[ShoppingCart] cleared (items removed). summary ->', cart.summary());
+    });
+
+    document.getElementById('copyLog').addEventListener('click', async ()=>{
+      try{
+        await navigator.clipboard.writeText(Array.from(logEl.children).map(n=>n.textContent).join('\n'));
+        alert('Log copied to clipboard');
+      }catch(e){ alert('Copy failed: ' + e); }
+    });
+
+    document.getElementById('clearLog').addEventListener('click', ()=>{ logEl.innerHTML = ''; });
+
+    // For demonstration when the page loads, show that multiple calls return the same instance
+    (function demoOnLoad(){
+      const a = AppConfig.getInstance({currency:'INR', taxPercent:18, discount:5});
+      const b = AppConfig.getInstance();
+      log('[Demo] AppConfig: two calls produce same instanceId?', a.instanceId === b.instanceId, a.summary());
+
+      const c1 = ShoppingCartManager.getInstance();
+      const c2 = ShoppingCartManager.getInstance();
+      log('[Demo] ShoppingCartManager: two calls produce same instanceId?', c1.instanceId === c2.instanceId, c1.summary());
+    })();
+
   </script>
 </body>
 </html>
