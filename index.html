@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Starter Index Page</title>
+  <meta name="description" content="A minimal, responsive starter HTML page." />
+  <style>
+    :root { --bg:#0b1220; --card:#111a2d; --text:#e6e9ef; --muted:#a8b3cf; --accent:#7aa2f7; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 600px at 80% -10%, rgba(122,162,247,.15), transparent 60%), var(--bg);
+      color: var(--text); line-height: 1.6;
+    }
+    header { padding: 4rem 1rem 2rem; text-align: center; }
+    h1 { margin: 0 0 .5rem; font-size: clamp(1.8rem, 2.5vw + 1rem, 3rem); letter-spacing: .3px; }
+    p.lead { margin: .25rem auto 0; max-width: 60ch; color: var(--muted); }
+    main { display: grid; place-items: center; padding: 2rem 1rem 4rem; }
+    .card {
+      width: min(800px, 92%); background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      border: 1px solid rgba(255,255,255,.08); border-radius: 1.25rem; padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.05);
+      backdrop-filter: blur(6px);
+    }
+    .row { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top: 1rem; }
+    .item { padding: 1rem; border-radius: .9rem; background: var(--card); border: 1px solid rgba(255,255,255,.06); }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; background: #0f1629; color: #dfe6ff; }
+    pre { padding: .75rem; border-radius: .5rem; overflow: auto; }
+    .actions { display: flex; gap: .75rem; margin-top: 1rem; flex-wrap: wrap; }
+    .btn {
+      appearance: none; padding: .7rem 1rem; border-radius: .7rem; border: 1px solid rgba(255,255,255,.15);
+      background: linear-gradient(180deg, rgba(122,162,247,.15), rgba(122,162,247,.05));
+      color: var(--text); text-decoration: none; cursor: pointer; font-weight: 600;
+      transition: transform .08s ease, box-shadow .2s ease, border-color .2s ease;
+      box-shadow: 0 8px 16px rgba(122,162,247,.15);
+    }
+    .btn:hover { transform: translateY(-1px); border-color: rgba(122,162,247,.45); box-shadow: 0 10px 20px rgba(122,162,247,.2); }
+    footer { text-align: center; color: var(--muted); padding: 2rem 1rem; border-top: 1px solid rgba(255,255,255,.06); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>It works 🎉</h1>
+    <p class="lead">This is a minimal, responsive <code>index.html</code> you can use as a starting point for your project.</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Quick Start</h2>
+      <div class="row">
+        <div class="item">
+          <strong>1.</strong> Open this file in a browser to see the page.
+        </div>
+        <div class="item">
+          <strong>2.</strong> Edit the HTML, CSS, or JS below to customize.
+        </div>
+        <div class="item">
+          <strong>3.</strong> Save and refresh to view your changes.
+        </div>
+      </div>
+
+      <h3 style="margin-top:1.25rem;">Starter Markup</h3>
+      <pre>&lt;div class="hello"&gt;Hello world!&lt;/div&gt;</pre>
+
+      <div class="actions">
+        <button class="btn" id="helloBtn" type="button">Click me</button>
+        <a class="btn" href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank" rel="noreferrer noopener">HTML Docs</a>
+      </div>
+      <p id="output" style="margin-top:.75rem; color: var(--muted);"></p>
+    </section>
+  </main>
+
+  <footer>
+    <small>&copy; <span id="year"></span> Your Project · Built with ❤️</small>
+  </footer>
+
+  <script>
+    // Simple JS to show interactivity
+    const btn = document.getElementById('helloBtn');
+    const out = document.getElementById('output');
+    const year = document.getElementById('year');
+    year.textContent = new Date().getFullYear();
+
+    btn.addEventListener('click', () => {
+      const now = new Date();
+      out.textContent = "Button clicked at " + now.toLocaleString();
+      console.log("Hello from index.html!");
+    });
+  </script>
+</body>
+</html>
